@@ -151,7 +151,6 @@ class AsiCamRunnerEntries(RunnerStatusDict, total=False):
     camera_info: Dict[str, str]
     pause: bool
 
-
 class USBCamRunnerEntries(RunnerStatusDict, total=False):
     """
     For serializing the status of nightskycam USBCamRunner
@@ -208,6 +207,33 @@ def get_AsiCamRunner_report(sc: AsiCamRunnerEntries) -> Dict[str, str]:
 def get_USBCamRunner_report(sc: USBCamRunnerEntries) -> Dict[str, str]:
     return get_CamRunner_report(sc, "USB camera")
 
+
+class ApertureRunnerEntries(RunnerStatusDict, total=False):
+    """
+    For serializing the status of nightskycam ApertureRunner
+    """
+    use: bool
+    status: str
+    reason: str
+    use_zwo_camera: bool
+    time_window: str
+
+
+def get_ApertureRunner_report(
+        sc: ApertureRunnerEntries
+)->Dict[str,str]:
+    """
+    Returns a summary of selected information
+    """
+    if not sc["use"]:
+        return {"used":"no"}
+    r: Dict[str,str] = {}
+    r["status"] = f"{sc['status']} ({sc['reason']})"
+    r["using camera activity"]="yes" if sc["use_zwo_camera"] else "no"
+    if not r["use_zwo_camera"]:
+        r["time window"] = sc["time_window"]
+    return r
+    
 
 class CommandRunnerEntries(RunnerStatusDict, total=False):
     """
