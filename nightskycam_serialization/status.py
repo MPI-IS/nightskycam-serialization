@@ -213,6 +213,7 @@ class ApertureRunnerEntries(RunnerStatusDict, total=False):
     For serializing the status of nightskycam ApertureRunner
     """
     use: bool
+    focus: int
     status: str
     reason: str
     use_zwo_camera: bool
@@ -232,6 +233,7 @@ def get_ApertureRunner_report(
     r["using camera activity"]="yes" if sc["use_zwo_camera"] else "no"
     if not r["use_zwo_camera"]:
         r["time window"] = sc["time_window"]
+    r["focus"]=str(sc["focus"])
     return r
     
 
