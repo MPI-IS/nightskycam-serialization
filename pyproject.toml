@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nightskycam-serialization"
-version = "0.1.1"
+version = "0.1.2"
 description = "communication between nightskycam and nightskycam-server"
 authors = ["Vincent Berenz <vberenz@tuebingen.mpg.de>"]
 packages = [{ include = "nightskycam_serialization" }]

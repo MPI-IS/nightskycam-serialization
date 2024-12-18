@@ -48,6 +48,7 @@ NightskycamRunner = Literal[
     "CommandRunner",
     "StatusRunner",
     "ConfigRunner",
+    "ApertureRunner"
 ]
 """The list of runner classes defined and used by nightskycam"""
 
@@ -71,7 +72,8 @@ class RunnerClasses(Enum):
     SpaceKeeperRunner = "SpaceKeeperRunner"
     ConfigRunner = "ConfigRunner"
     StatusRunner = "StatusRunner"
-
+    ApertureRunner = "ApertureRunner"
+    
 
 def serialize_status(
     system: str, status: Iterable[StatusDict], token: Optional[str] = None
