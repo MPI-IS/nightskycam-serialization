@@ -48,7 +48,7 @@ NightskycamRunner = Literal[
     "CommandRunner",
     "StatusRunner",
     "ConfigRunner",
-    "ApertureRunner"
+    "ApertureRunner",
 ]
 """The list of runner classes defined and used by nightskycam"""
 
@@ -73,7 +73,7 @@ class RunnerClasses(Enum):
     ConfigRunner = "ConfigRunner"
     StatusRunner = "StatusRunner"
     ApertureRunner = "ApertureRunner"
-    
+
 
 def serialize_status(
     system: str, status: Iterable[StatusDict], token: Optional[str] = None
@@ -153,6 +153,7 @@ class AsiCamRunnerEntries(RunnerStatusDict, total=False):
     camera_info: Dict[str, str]
     pause: bool
 
+
 class USBCamRunnerEntries(RunnerStatusDict, total=False):
     """
     For serializing the status of nightskycam USBCamRunner
@@ -214,6 +215,7 @@ class ApertureRunnerEntries(RunnerStatusDict, total=False):
     """
     For serializing the status of nightskycam ApertureRunner
     """
+
     use: bool
     focus: int
     status: str
@@ -222,22 +224,24 @@ class ApertureRunnerEntries(RunnerStatusDict, total=False):
     time_window: str
 
 
-def get_ApertureRunner_report(
-        sc: ApertureRunnerEntries
-)->Dict[str,str]:
+def get_ApertureRunner_report(sc: ApertureRunnerEntries) -> Dict[str, str]:
     """
     Returns a summary of selected information
     """
     if not sc["use"]:
-        return {"used":"no"}
-    r: Dict[str,str] = {}
+        return {"aperture": "used: no"}
+    r: Dict[str, str] = {}
+    try:
+        r["focus"] = sc['focus']
+    except KeyError:
+        r["focus"] = "not set"
     r["status"] = f"{sc['status']} ({sc['reason']})"
-    r["using camera activity"]="yes" if sc["use_zwo_camera"] else "no"
-    if not r["use_zwo_camera"]:
+    r["using camera activity"] = "yes" if sc["use_zwo_camera"] else "no"
+    if not sc["use_zwo_camera"]:
         r["time window"] = sc["time_window"]
-    r["focus"]=str(sc["focus"])
-    return r
-    
+    r["focus"] = str(sc["focus"])
+    return {"aperture": "\n".join([f"{k}: {v}" for k,v in r.items()])}
+
 
 class CommandRunnerEntries(RunnerStatusDict, total=False):
     """
