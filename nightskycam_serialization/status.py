@@ -180,7 +180,7 @@ def get_CamRunner_report(
 
     pause = sc.get("pause", False)
     if pause:
-        return {camera_type: "paused - visit 'snapshots' to reactivate"}
+        return {camera_type: "paused - restart to reactivate"}
 
     entries["active"] = sc.get("active", None)
 
@@ -222,17 +222,22 @@ class ApertureRunnerEntries(RunnerStatusDict, total=False):
     reason: str
     use_zwo_camera: bool
     time_window: str
+    pause: bool
 
 
 def get_ApertureRunner_report(sc: ApertureRunnerEntries) -> Dict[str, str]:
     """
     Returns a summary of selected information
     """
+    pause = sc.get("pause", False)
+    if pause:
+        return {"aperture": "paused - restart to reactivate"}
+
     if not sc["use"]:
         return {"aperture": "used: no"}
     r: Dict[str, str] = {}
     try:
-        r["focus"] = sc['focus']
+        r["focus"] = sc["focus"]
     except KeyError:
         r["focus"] = "not set"
     r["status"] = f"{sc['status']} ({sc['reason']})"
@@ -240,7 +245,7 @@ def get_ApertureRunner_report(sc: ApertureRunnerEntries) -> Dict[str, str]:
     if not sc["use_zwo_camera"]:
         r["time window"] = sc["time_window"]
     r["focus"] = str(sc["focus"])
-    return {"aperture": "\n".join([f"{k}: {v}" for k,v in r.items()])}
+    return {"aperture": "\n".join([f"{k}: {v}" for k, v in r.items()])}
 
 
 class CommandRunnerEntries(RunnerStatusDict, total=False):
