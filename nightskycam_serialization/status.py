@@ -182,7 +182,8 @@ def get_CamRunner_report(
     if pause:
         return {camera_type: "paused - restart to reactivate"}
 
-    entries["active"] = sc.get("active", None)
+    active = sc.get("active", None)
+    entries["active"] = active if active else "unspecified"
 
     usa = sc.get("use_sun_alt", None)
     entries["use sun altitude"] = "yes" if usa else "no"
@@ -190,13 +191,15 @@ def get_CamRunner_report(
     uw = sc.get("use_weather", None)
     entries["use weather"] = "yes" if uw else "no"
 
-    entries["camera temperature"] = sc.get("camera_info", {}).get(
+    camera_temperature = sc.get("camera_info", {}).get(
         "camera_temperature", None
     )
+    entries["camera temperature"] = str(camera_temperature) if camera_temperature is not None else "unknown"
 
-    entries["number of pictures taken (since boot)"] = sc.get(
+    num_pics = sc.get(
         "number_of_pictures_taken", None
     )
+    entries["number of pictures taken (since boot)"] = str(num_pics) if num_pics is not None else "unknown"
 
     r = "\n".join(f"{k}: {v}" for k, v in entries.items() if v is not None)
 
@@ -237,7 +240,8 @@ def get_ApertureRunner_report(sc: ApertureRunnerEntries) -> Dict[str, str]:
         return {"aperture": "used: no"}
     r: Dict[str, str] = {}
     try:
-        r["focus"] = sc["focus"]
+        focus = sc["focus"]
+        r["focus"] = str(focus) if focus is not None else "unknown"
     except KeyError:
         r["focus"] = "not set"
     r["status"] = f"{sc['status']} ({sc['reason']})"
