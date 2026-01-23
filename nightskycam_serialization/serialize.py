@@ -4,12 +4,10 @@ import tomli
 import tomli_w
 
 
-class ImproperMessage(Exception):
-    ...
+class ImproperMessage(Exception): ...
 
 
-class IncorrectToken(Exception):
-    ...
+class IncorrectToken(Exception): ...
 
 
 _token_key: str = "__token__"

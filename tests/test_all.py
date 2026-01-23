@@ -26,17 +26,17 @@ from nightskycam_serialization.serialize import (
     serialize,
 )
 from nightskycam_serialization.status import (
+    ApertureRunnerEntries,
     NightskycamRunner,
     RunnerClasses,
     deserialize_status,
+    get_ApertureRunner_report,
     get_random_status_dict,
     get_runner_status_dict_class,
     get_status_entries_report,
     has_runner_status_dict,
     has_status_entries_report_function,
     serialize_status,
-    ApertureRunnerEntries,
-    get_ApertureRunner_report
 )
 
 
@@ -249,23 +249,23 @@ def test_get_status_entries_report():
 def test_aperture_runner_report():
 
     for pause in (True, False):
-    
+
         entries = ApertureRunnerEntries(
             use=True,
             focus=500,
-            status='running',
-            reason='because happy',
+            status="running",
+            reason="because happy",
             use_zwo_camera=True,
             time_window="10:00 - 17:00",
-            pause = pause
+            pause=pause,
         )
 
         report = get_ApertureRunner_report(entries)
 
-        assert len(report)==1
-        assert 'aperture' in report.keys()
-    
+        assert len(report) == 1
+        assert "aperture" in report.keys()
+
         if pause:
-            assert 'paused' in report['aperture']
+            assert "paused" in report["aperture"]
         else:
-            assert 'paused' not in report['aperture']
+            assert "paused" not in report["aperture"]

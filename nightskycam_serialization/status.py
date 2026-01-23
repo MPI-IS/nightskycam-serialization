@@ -91,9 +91,7 @@ def serialize_status(
     See: [serialize.serialize]()
     """
     d: Dict[str, Union[str, Dict[str, StatusDict]]] = {"system": system}
-    status_d: Dict[str, StatusDict] = {
-        s["name"]: serialize_fix_dict(s) for s in status
-    }
+    status_d: Dict[str, StatusDict] = {s["name"]: serialize_fix_dict(s) for s in status}
     d["status"] = status_d
     return serialize(d, token=token)
 
@@ -191,15 +189,15 @@ def get_CamRunner_report(
     uw = sc.get("use_weather", None)
     entries["use weather"] = "yes" if uw else "no"
 
-    camera_temperature = sc.get("camera_info", {}).get(
-        "camera_temperature", None
+    camera_temperature = sc.get("camera_info", {}).get("camera_temperature", None)
+    entries["camera temperature"] = (
+        str(camera_temperature) if camera_temperature is not None else "unknown"
     )
-    entries["camera temperature"] = str(camera_temperature) if camera_temperature is not None else "unknown"
 
-    num_pics = sc.get(
-        "number_of_pictures_taken", None
+    num_pics = sc.get("number_of_pictures_taken", None)
+    entries["number of pictures taken (since boot)"] = (
+        str(num_pics) if num_pics is not None else "unknown"
     )
-    entries["number of pictures taken (since boot)"] = str(num_pics) if num_pics is not None else "unknown"
 
     r = "\n".join(f"{k}: {v}" for k, v in entries.items() if v is not None)
 
@@ -326,6 +324,7 @@ class LocationInfoRunnerEntries(RunnerStatusDict, total=False):
     country: str
     timezone: str
     IPs: str
+    wlan: str
     local_time: str
     sun_alt: float
     sun_alt_threshold: float
@@ -350,20 +349,18 @@ def get_LocationInfoRunner_report(
         local_info["local time"] = li["local_time"]
     with suppress(KeyError):
         local_info["sun altitude"] = str(
-            f"{li['sun_alt']:.2f} "
-            f"(threshold: {li['sun_alt_threshold']:.2f})"
+            f"{li['sun_alt']:.2f} " f"(threshold: {li['sun_alt_threshold']:.2f})"
         )
     with suppress(KeyError):
         local_info["weather"] = str(
             f"{li['weather']} (cloud cover: {li['cloud_cover']})"
         )
     if local_info:
-        r["local info"] = "\n".join(
-            [f"{k}: {v}" for k, v in local_info.items()]
-        )
+        r["local info"] = "\n".join([f"{k}: {v}" for k, v in local_info.items()])
     with suppress(KeyError):
         r["IP(s)"] = li["IPs"]
-
+    with suppress(KeyError):
+        r["wlan"] = li["wlan"]
     return r
 
 
@@ -385,9 +382,7 @@ def get_ImageProcessRunner_report(
     Returns a summary of selected information
     """
     processes_applied = sp.get("processes_applied", "")
-    processes_applied_str = (
-        f"{processes_applied}, " if processes_applied else ""
-    )
+    processes_applied_str = f"{processes_applied}, " if processes_applied else ""
     try:
         return {
             "image process": str(
@@ -531,18 +526,14 @@ def get_random_status_dict(runner_class_name: str) -> RunnerStatusDict:
     def get_random_int_list() -> List[int]:
         return [get_random_int() for _ in range(get_random_int())]
 
-    def get_random_float(
-        min_value: float = 0.0, max_value: float = 1.0
-    ) -> float:
+    def get_random_float(min_value: float = 0.0, max_value: float = 1.0) -> float:
         return round(random.uniform(min_value, max_value), 2)
 
     def get_random_bool() -> bool:
         return random.choice([True, False])
 
     def get_random_str(length: int = 10) -> str:
-        return "".join(
-            random.choices(string.ascii_letters + string.digits, k=length)
-        )
+        return "".join(random.choices(string.ascii_letters + string.digits, k=length))
 
     def get_random_str_list() -> List[str]:
         return [get_random_str() for _ in range(get_random_int())]
@@ -617,9 +608,7 @@ class IntrospectionDict(TypedDict, total=False):
     free_space: float
 
 
-def get_introspection_dict(
-    status: Dict[str, RunnerStatusDict]
-) -> IntrospectionDict:
+def get_introspection_dict(status: Dict[str, RunnerStatusDict]) -> IntrospectionDict:
     """
     Casting to IntrospectionDict
     """
