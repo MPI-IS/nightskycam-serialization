@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "nightskycam-serialization"
-version = "0.1.5.1"
+version = "0.1.6.1"
 description = "communication between nightskycam and nightskycam-server"
 authors = ["Vincent Berenz <vberenz@tuebingen.mpg.de>"]
 packages = [{ include = "nightskycam_serialization" }]
 
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9,<3.10"
 # Normal dependencies:
 # Installable with both poetry and pip.
 tomli = "^2.0.1"
